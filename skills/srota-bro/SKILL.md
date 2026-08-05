@@ -1,12 +1,12 @@
 ---
-name: bro
-description: "Re-explain the previous assistant message in a much simpler way — for when the reply made you go 'bro what'. Use /bro to get a plain-language version of the last answer."
+name: srota-bro
+description: "Re-explain the previous assistant message in a much simpler way — for when the reply made you go 'bro what'. Use /srota-bro to get a plain-language version of the last answer."
 license: MIT
 ---
 
-# /bro — say it simpler
+# srota bro — say it simpler
 
-The user just typed `/bro`. Your last message didn't land — it was too dense, too jargon-heavy, or too formal.
+The user just typed `/srota-bro`. Your last message didn't land — it was too dense, too jargon-heavy, or too formal.
 
 **Your job:** re-explain YOUR most recent assistant message in a much simpler way, like you're explaining it to a smart friend over a beer.
 
