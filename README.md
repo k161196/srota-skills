@@ -20,3 +20,12 @@ npx skills add k161196/srota-skills@srota-mcp-orchestration
 | --- | --- |
 | [`srota-mcp-orchestration`](skills/srota-mcp-orchestration/SKILL.md) | Using Srota's MCP server to spawn, watch, and coordinate sibling agent panes from inside a Srota pane. |
 | [`srota-bro`](skills/srota-bro/SKILL.md) | `/srota-bro` — re-explain the previous assistant message in plain language. |
+
+## Migration notes
+
+- **`bro` → `srota-bro`** (2026-08-05): all skills in this repo are prefixed `srota-`. If you installed `bro` before this change, it's now orphaned under the old name and won't receive updates. Clean it up and reinstall under the new name:
+
+  ```bash
+  npx skills remove bro -g -y
+  npx skills add k161196/srota-skills --skill srota-bro -g
+  ```
