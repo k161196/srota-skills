@@ -27,7 +27,10 @@ If the ticket doesn't already name which service/API/script this is (check the d
 
 > "Which repo(s) and branch is this on, and which service/API/script does it touch?"
 
-The moment you have that answer and it wasn't already on the ticket, post it back to Jira immediately (a short comment or field update) — don't wait for step 5. That way the mapping is captured even if this session ends before the interview finishes, and next time anyone (human or agent) opens this ticket, that search is already done.
+The moment you have that answer, explore the named repo to actually locate that service/API/script — this one fact is worth verifying every time, since everything else in the interview hangs off it being right.
+
+- **Found it:** if it wasn't already on the ticket, post the confirmed mapping back to Jira immediately (a short comment or field update) — don't wait for step 5. That way it's captured even if this session ends before the interview finishes, and next time anyone (human or agent) opens this ticket, that search is already done.
+- **Can't find it:** don't silently trust the user's answer or silently drop it — highlight the mismatch back to them: "I looked for `<what they named>` in `<repo>` and couldn't find it — different name/path, a different repo, or is this net-new (doesn't exist yet)?" Resolve that before moving on, and post whatever you land on back to the ticket, noting the discrepancy (e.g. "renamed from X" or "net new, not yet in the repo") so the next agent doesn't hit the same dead end.
 
 **Ask before you explore, for anything the user can plausibly answer from memory.** The user is often the assignee or the person who wrote the relevant code — a one-line answer from them is faster and more authoritative than reconstructing the same fact through several `search_graph`/`trace_path` round-trips, and unlike a guessed route prefix or file path, it can't be subtly wrong. This applies not just to "which service" but to any concrete specific the interview needs: the exact endpoint(s)/route(s) involved, which of several similar/duplicate implementations is the one in question, test data (symbol/ID/account to repro with), env values. Ask for these directly, one at a time, before reaching for graph tools.
 
