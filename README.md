@@ -20,6 +20,7 @@ npx skills add k161196/srota-skills@srota-mcp-orchestration
 | --- | --- |
 | [`srota-mcp-orchestration`](skills/srota-mcp-orchestration/SKILL.md) | Using Srota's MCP server to spawn, watch, and coordinate sibling agent panes from inside a Srota pane. |
 | [`srota-bro`](skills/srota-bro/SKILL.md) | `/srota-bro` — re-explain the previous assistant message in plain language. |
+| [`srota-jira`](skills/srota-jira/SKILL.md) | Grill the user until a Jira ticket has full repro steps, test plan, repo/branch, and run instructions before anyone writes code. |
 
 ## Migration notes
 
