@@ -21,7 +21,7 @@ Look for Jira/Atlassian tools first (e.g. `mcp__claude_ai_Atlassian__*`, or simi
 
 Pull the full issue: title, description, type (Bug/Task/Story/etc.), status, existing comments, and any custom fields that might already carry repo/branch info. Read what's already there — never ask the user for something the ticket already answers.
 
-## 3. Pin down repo, branch, and affected service, then explore
+## 3. Pin down repo, branch, and affected service — ask first, explore only what's left
 
 If the ticket doesn't already name which service/API/script this is (check the description, comments, and custom fields first), ask before doing any codebase searching — don't go hunting through folders trying to guess it, that's exactly the wasted work asking up front avoids:
 
@@ -29,10 +29,17 @@ If the ticket doesn't already name which service/API/script this is (check the d
 
 The moment you have that answer and it wasn't already on the ticket, post it back to Jira immediately (a short comment or field update) — don't wait for step 5. That way the mapping is captured even if this session ends before the interview finishes, and next time anyone (human or agent) opens this ticket, that search is already done.
 
-Only now explore the code, per the repo-wide codebase-memory-mcp instructions:
+**Ask before you explore, for anything the user can plausibly answer from memory.** The user is often the assignee or the person who wrote the relevant code — a one-line answer from them is faster and more authoritative than reconstructing the same fact through several `search_graph`/`trace_path` round-trips, and unlike a guessed route prefix or file path, it can't be subtly wrong. This applies not just to "which service" but to any concrete specific the interview needs: the exact endpoint(s)/route(s) involved, which of several similar/duplicate implementations is the one in question, test data (symbol/ID/account to repro with), env values. Ask for these directly, one at a time, before reaching for graph tools.
 
-- If the current directory contains multiple service folders (monorepo-style), explore the relevant one(s) with `search_graph` / `trace_path` / `get_code_snippet` / `get_architecture` — don't fall back to grep unless the graph tools come up short.
-- Use what you learn to ask sharper questions next (name the actual endpoint/file instead of asking "which endpoint"), and to avoid asking about anything you can just look up yourself.
+Reach for codebase exploration only when:
+
+- The user doesn't know or isn't sure (explicitly says so, or their answer is still vague after one follow-up).
+- The ticket or user's answer leaves a genuine fork unresolved (e.g. two parallel implementations, old vs. new page) — explore enough to name the fork precisely, then ask the user which side it's on rather than guessing.
+- You need to verify a fact before writing it into the ticket — never assert a file path, route, or line number in the step-5 write-back that you haven't actually seen in the code.
+
+When you do explore, per the repo-wide codebase-memory-mcp instructions: if the current directory contains multiple service folders (monorepo-style), explore the relevant one(s) with `search_graph` / `trace_path` / `get_code_snippet` / `get_architecture` — don't fall back to grep unless the graph tools come up short. Use what you learn to ask sharper questions (name the actual endpoint/file instead of asking "which endpoint") — but treat that exploration as the exception for gaps the user couldn't fill, not the default first move.
+
+Net effect: asking becomes the default for anything the user (often the assignee/author) could just tell you — exact endpoints, which of several duplicate implementations applies, test data, env values. Exploration is demoted to three specific fallback cases: user doesn't know, a genuine fork needs naming before you can ask a sharp question, or verifying a fact before it's written into the ticket.
 
 ## 4. Grill the user on everything else
 
