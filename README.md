@@ -21,9 +21,6 @@ npx skills add k161196/srota-skills@srota-mcp-orchestration
 | [`srota-mcp-orchestration`](skills/srota-mcp-orchestration/SKILL.md) | Using Srota's MCP server to spawn, watch, and coordinate sibling agent panes from inside a Srota pane. |
 | [`srota-bro`](skills/srota-bro/SKILL.md) | `/srota-bro` — re-explain the previous assistant message in plain language. |
 | [`srota-jira`](skills/srota-jira/SKILL.md) | Grill the user until a Jira ticket has full repro steps, test plan, repo/branch, and run instructions before anyone writes code. |
-| [`srota-jira-context`](skills/srota-jira-context/SKILL.md) | Pull a Jira issue's description, comments, attachments (downloaded + auto-extracted), and linked Figma URLs onto disk as `context.md`. |
-| [`srota-prd-audit`](skills/srota-prd-audit/SKILL.md) | Audit a PRD for ambiguous requirements, missing coverage, internal contradictions, and unaddressed edge cases; write an HTML report. |
-| [`srota-prd-design-audit`](skills/srota-prd-design-audit/SKILL.md) | Cross-check a PRD against its Figma/design screens (both directions) plus an edge-case checklist, and write an HTML audit report. |
 
 ## Migration notes
 
