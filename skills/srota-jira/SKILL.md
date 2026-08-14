@@ -23,11 +23,13 @@ Pull the full issue: title, description, type (Bug/Task/Story/etc.), status, exi
 
 ## 3. Pin down repo, branch, and affected service, then explore
 
-Ask this before anything else in the interview, since exploring code depends on the answer. Skip only what the ticket already names:
+If the ticket doesn't already name which service/API/script this is (check the description, comments, and custom fields first), ask before doing any codebase searching — don't go hunting through folders trying to guess it, that's exactly the wasted work asking up front avoids:
 
 > "Which repo(s) and branch is this on, and which service/API/script does it touch?"
 
-Then, per the repo-wide codebase-memory-mcp instructions, explore that area of the code:
+The moment you have that answer and it wasn't already on the ticket, post it back to Jira immediately (a short comment or field update) — don't wait for step 5. That way the mapping is captured even if this session ends before the interview finishes, and next time anyone (human or agent) opens this ticket, that search is already done.
+
+Only now explore the code, per the repo-wide codebase-memory-mcp instructions:
 
 - If the current directory contains multiple service folders (monorepo-style), explore the relevant one(s) with `search_graph` / `trace_path` / `get_code_snippet` / `get_architecture` — don't fall back to grep unless the graph tools come up short.
 - Use what you learn to ask sharper questions next (name the actual endpoint/file instead of asking "which endpoint"), and to avoid asking about anything you can just look up yourself.
