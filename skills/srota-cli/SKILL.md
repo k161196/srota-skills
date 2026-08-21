@@ -1,6 +1,6 @@
 ---
 name: srota-cli
-description: Drive Srota panes from a plain shell via the srota-cli binary — list/create/send/read/wait/close against the same srota-daemon socket the app and MCP server use, no MCP connection required. Use this when srota-cli is on PATH but no mcp__srota__* tools are connected (a bare shell session, a script, or a CI-style context).
+description: Drive Srota panes from a plain shell via the srota-cli binary — list/create/send/read/wait/close against the same srota-daemon socket the app and MCP server use, no MCP connection required. Also drives the iOS Simulator directly (screenshot/tap/swipe/home) via idb. Use this when srota-cli is on PATH but no mcp__srota__* tools are connected (a bare shell session, a script, or a CI-style context).
 ---
 
 # srota-cli
@@ -9,7 +9,15 @@ description: Drive Srota panes from a plain shell via the srota-cli binary — l
 
 **This skill applies when:** `srota-cli` is on PATH and no `mcp__srota__*` tools are connected — a bare terminal, a shell script, a cron/CI job, or any agent session without the MCP server wired up. If `mcp__srota__*` tools ARE available, use those instead (richer: fan-out budget, structured reports, session notes) — this binary has no equivalent for those.
 
-Every subcommand talks to `~/.srota/daemon.sock` (override with `SROTA_SOCKET_PATH`, or `SROTA_DIR` to change the directory). If no daemon is running, the command fails immediately with a message telling you to start the app or run `srota-daemon` directly.
+Every subcommand except the simulator ones talks to `~/.srota/daemon.sock` (override with `SROTA_SOCKET_PATH`, or `SROTA_DIR` to change the directory). If no daemon is running, the command fails immediately with a message telling you to start the app or run `srota-daemon` directly.
+
+## Simulator commands bypass the daemon
+
+`screenshot`, `tap`, `swipe`, and `home` don't go through the daemon at all — they talk directly to the `idb_companion` process on `127.0.0.1:10882` that the Srota app's Simulator panel already has open (same connection `IdbClient` in the main app target uses). This means:
+
+- The Simulator panel must already be open in the Srota app, or every one of these calls fails with a connection error.
+- Coordinates for `tap`/`swipe` are device points (e.g. iPhone logical point space), not pixels — a screenshot's pixel dimensions are typically 2x or 3x the point coordinates you pass here.
+- There's no single "click" HID event, only discrete press/release — `tap` and `home` each send a down/up pair; `swipe` is one `HIDSwipe` from start to end (idb has no "move while held" primitive for a multi-point drag).
 
 ## Commands
 
@@ -19,9 +27,13 @@ Every subcommand talks to `~/.srota/daemon.sock` (override with `SROTA_SOCKET_PA
 - `srota-cli read <pane-id> [--replay-bytes <n>] [--readable]` (alias `attach`) — stream a pane's output until it closes. `--readable` strips ANSI escapes and collapses `\r`-redraws into flat text; without it you get raw JSON frames (`ring_buffer`/`live`/`dead`) on stdout, one per line.
 - `srota-cli wait <pane-id> [--until <s1,s2,...>] [--timeout <ms>] [--expect-kind <kind>]` — block server-side until the pane's agent reaches one of the target statuses (e.g. `idle`, `blocked`, `done`).
 - `srota-cli close <pane-id>` — close a pane.
+- `srota-cli screenshot [--out <path>] [--max-width <px>]` — save a PNG of the iOS Simulator (default: `screenshot.png`, native retina resolution). Pass `--max-width` to downscale (aspect-preserved) — the native resolution (e.g. 1206x2622) is more pixels than a vision-model agent needs to read the screen, and the larger image costs more tokens/latency per screenshot->view->act round trip. `--max-width 400` is legible for typical iPhone UI at ~1/4 the file size.
+- `srota-cli tap --x <x> --y <y>` — send a tap at a point (device points, not pixels).
+- `srota-cli swipe --x1 <x> --y1 <y> --x2 <x> --y2 <y>` — send a swipe/drag between two points.
+- `srota-cli home` — press the hardware Home button.
 - `srota-cli --help` / `-h` — print the command surface.
 
-Every command prints the daemon's raw JSON response to stdout (or, for `read --readable`, cleaned text instead).
+Every command prints the daemon's raw JSON response to stdout (or, for `read --readable`, cleaned text instead). `screenshot` prints the saved file path instead; `tap`/`swipe`/`home` produce no stdout on success.
 
 ## Exit codes (for scripting)
 
