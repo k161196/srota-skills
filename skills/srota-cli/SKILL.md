@@ -28,12 +28,16 @@ Every subcommand except the simulator ones talks to `~/.srota/daemon.sock` (over
 - `srota-cli wait <pane-id> [--until <s1,s2,...>] [--timeout <ms>] [--expect-kind <kind>]` — block server-side until the pane's agent reaches one of the target statuses (e.g. `idle`, `blocked`, `done`).
 - `srota-cli close <pane-id>` — close a pane.
 - `srota-cli screenshot [--out <path>] [--max-width <px>]` — save a PNG of the iOS Simulator (default: `screenshot.png`, native retina resolution). Pass `--max-width` to downscale (aspect-preserved) — the native resolution (e.g. 1206x2622) is more pixels than a vision-model agent needs to read the screen, and the larger image costs more tokens/latency per screenshot->view->act round trip. `--max-width 400` is legible for typical iPhone UI at ~1/4 the file size.
-- `srota-cli tap --x <x> --y <y>` — send a tap at a point (device points, not pixels).
-- `srota-cli swipe --x1 <x> --y1 <y> --x2 <x> --y2 <y>` — send a swipe/drag between two points.
-- `srota-cli home` — press the hardware Home button.
+- `srota-cli tap --x <x> --y <y> [--out <path>] [--max-width <px>]` — send a tap at a point (device points, not pixels).
+- `srota-cli swipe --x1 <x> --y1 <y> --x2 <x> --y2 <y> [--out <path>] [--max-width <px>]` — send a swipe/drag between two points.
+- `srota-cli home [--out <path>] [--max-width <px>]` — press the hardware Home button.
 - `srota-cli --help` / `-h` — print the command surface.
 
-Every command prints the daemon's raw JSON response to stdout (or, for `read --readable`, cleaned text instead). `screenshot` prints the saved file path instead; `tap`/`swipe`/`home` produce no stdout on success.
+Every command prints the daemon's raw JSON response to stdout (or, for `read --readable`, cleaned text instead). `screenshot` prints the saved file path instead; `tap`/`swipe`/`home` produce no stdout on success — unless `--out` is passed (see below), in which case they print the screenshot path like `screenshot` does.
+
+### Combining an action with a screenshot
+
+`tap`/`swipe`/`home` accept the same `--out`/`--max-width` flags as `screenshot`: pass `--out <path>` and the CLI performs the action, then immediately captures the resulting frame — one call and one round trip instead of the action followed by a separate `screenshot` call. This matters for an agent driving the simulator in a loop (tap → look → tap → look → ...): each saved round trip is a full extra model turn. Prefer `srota-cli tap --x 200 --y 400 --out /tmp/after.png --max-width 400` over two separate calls.
 
 ## Exit codes (for scripting)
 
